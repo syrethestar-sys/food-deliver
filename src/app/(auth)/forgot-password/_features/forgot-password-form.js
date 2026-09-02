@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
-import { useAuth } from "@/providers/auth-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Field, FieldLabel } from "@/components/ui/field";
@@ -12,22 +11,19 @@ import { FieldError } from "@/components/field-error";
 import { ChevronLeft } from "lucide-react";
 import { AuthHeader } from "@/components/auth-header";
 
-const loginSchema = z.object({
+const emailSchema = z.object({
   email: z
     .string()
     .min(1, "Email is required")
-    .email("Enter a valid email address"),
-  password: z.string().min(1, "Password is required"),
+    .email("Invalid email. Use a format like example@email.com"),
 });
 
-export function LoginForm({
+export function ForgotPasswordForm({
   email = "",
-  password = "",
   onEmailChange = () => {},
-  onPasswordChange = () => {},
+  onNext = () => {},
 }) {
   const router = useRouter();
-  const { setUser } = useAuth();
   const [error, setError] = useState("");
 
   const clearError = () => {
@@ -37,26 +33,30 @@ export function LoginForm({
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const result = loginSchema.safeParse({ email, password });
+    const result = emailSchema.safeParse({ email });
     if (!result.success) {
       setError(
-        result.error.issues[0]?.message ??
-          "Check your email and password and try again.",
+        result.error.issues[0]?.message ?? "Enter a valid email address.",
       );
       return;
     }
 
-    setUser({ email });
-    router.push("/");
+    setError("");
+    onNext();
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full flex flex-col gap-6">
+    <form
+      onSubmit={handleSubmit}
+      className="w-full flex flex-col gap-6"
+      noValidate
+    >
       <AuthHeader
-        title="Login"
-        description="Log in to enjoy your favorite dishes."
-        onBack={router.back}
+        title="Reset your password"
+        description="Enter your email to receive a password reset link."
+        onBack={() => router.back()}
       />
+
       <div className="flex flex-col gap-4">
         <Field>
           <FieldLabel htmlFor="email">Email</FieldLabel>
@@ -66,42 +66,21 @@ export function LoginForm({
             autoComplete="email"
             placeholder="Enter your email address"
             value={email}
+            aria-invalid={error ? true : undefined}
             onChange={(event) => {
               onEmailChange(event.target.value);
               clearError();
             }}
           />
-        </Field>
-
-        <Field>
-          <FieldLabel htmlFor="password">Password</FieldLabel>
-          <Input
-            id="password"
-            type="password"
-            autoComplete="current-password"
-            placeholder="Password"
-            value={password}
-            onChange={(event) => {
-              onPasswordChange(event.target.value);
-              clearError();
-            }}
-          />
           {error && <FieldError>{error}</FieldError>}
         </Field>
-
-        <Link
-          href="/forgot-password"
-          className="text-[14px] underline self-start"
-        >
-          Forgot password?
-        </Link>
       </div>
 
       <Button
         type="submit"
         className="w-full h-9 bg-[#18181B] text-white rounded-md cursor-pointer"
       >
-        Let&apos;s Go
+        Send link
       </Button>
 
       <div className="text-[16px] flex gap-3 justify-center">

@@ -8,8 +8,6 @@ import { Input } from "@/components/ui/input";
 import { AuthHeader } from "@/components/auth-header";
 import { FieldError } from "@/components/field-error";
 
-// Step 2 — Create new password. Design states: Default / Destructive
-// (passwords don't match, weak password) / Filled. Includes show-password toggle.
 const isStrong = (value) =>
   value.length >= 8 && /\d/.test(value) && /[^A-Za-z0-9]/.test(value);
 
@@ -19,6 +17,10 @@ export function StepTwo({ form, onChange, onBack, onDone }) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    if (form.password.length < 8) {
+      setError("Password must be at least 8 characters long");
+      return;
+    }
     if (form.password !== form.confirm) {
       setError("Those password didn't match, Try again");
       return;
