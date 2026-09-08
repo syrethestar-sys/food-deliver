@@ -10,15 +10,9 @@ import { Input } from "@/components/ui/input";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { FieldError } from "@/components/field-error";
 import { ChevronLeft } from "lucide-react";
+import { server } from "@/app/api/api";
 import { AuthHeader } from "@/components/auth-header";
-
-const loginSchema = z.object({
-  email: z
-    .string()
-    .min(1, "Email is required")
-    .email("Enter a valid email address"),
-  password: z.string().min(1, "Password is required"),
-});
+import { loginSchema } from "@/lib/validation/login";
 
 export function LoginForm({
   email = "",
@@ -29,12 +23,13 @@ export function LoginForm({
   const router = useRouter();
   const { setUser } = useAuth();
   const [error, setError] = useState("");
+  const [show, setShow] = useState(false);
 
   const clearError = () => {
     if (error) setError("");
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     const result = loginSchema.safeParse({ email, password });
@@ -46,8 +41,19 @@ export function LoginForm({
       return;
     }
 
-    setUser({ email });
-    router.push("/");
+    try {
+      const response = await server.post("/auth/login", { email, password });
+
+      localStorage.setItem("user", JSON.stringify(response.data.user));
+      setUser({ email });
+      router.push("/admin/food-menu");
+    } catch (err) {
+      const message =
+        `${err.response?.data?.message} `??
+        "Something went wrong. Please try again.";
+      setError(message);
+      console.error(err);      
+    }
   };
 
   return (
@@ -77,7 +83,7 @@ export function LoginForm({
           <FieldLabel htmlFor="password">Password</FieldLabel>
           <Input
             id="password"
-            type="password"
+            type={show ? "text" : "password"}
             autoComplete="current-password"
             placeholder="Password"
             value={password}
@@ -87,6 +93,15 @@ export function LoginForm({
             }}
           />
           {error && <FieldError>{error}</FieldError>}
+          <label className="flex items-center gap-2 text-sm text-muted-foreground">
+            <input
+              type="checkbox"
+              checked={show}
+              onChange={(event) => setShow(event.target.checked)}
+              className="size-4 rounded border-input accent-[#f0431c]"
+            />
+            Show password
+          </label>
         </Field>
 
         <Link

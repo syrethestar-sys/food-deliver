@@ -9,32 +9,38 @@ import { AuthHeader } from "@/components/auth-header";
 import { FieldError } from "@/components/field-error";
 
 const isStrong = (value) =>
-  value.length >= 8 && /\d/.test(value) && /[^A-Za-z0-9]/.test(value);
+  value.length >= 8 && /\d/.test(value) && /[^0-9]/.test(value) && /[^A-Za-z]/.test(value);
 
 export function StepTwo({ form, onChange, onBack, onDone }) {
+  const [data, setData] = useState()
   const [show, setShow] = useState(false);
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState({ password: "", confirm: "" });
 
   const handleSubmit = (event) => {
     event.preventDefault();
+
+    const next = { password: "", confirm: "" };
+
     if (form.password.length < 8) {
-      setError("Password must be at least 8 characters long");
-      return;
+      next.password = "Password must be at least 8 characters long";
+    } else if (!isStrong(form.password)) {
+      next.password = "Weak password. Use numbers, letters and symbols.";
     }
+
     if (form.password !== form.confirm) {
-      setError("Those password didn't match, Try again");
-      return;
+      next.confirm = "Those passwords didn't match. Try again.";
     }
-    if (!isStrong(form.password)) {
-      setError("Weak password. Use numbers and symbols.");
-      return;
-    }
-    setError("");
+
+    setErrors(next);
+    if (next.password || next.confirm) return;
+
     onDone?.();
   };
 
-  const clearError = () => {
-    if (error) setError("");
+  const clearError = (field) => {
+    setErrors((current) =>
+      current[field] ? { ...current, [field]: "" } : current,
+    );
   };
 
   return (
@@ -51,24 +57,26 @@ export function StepTwo({ form, onChange, onBack, onDone }) {
           autoComplete="new-password"
           placeholder="Password"
           value={form.password}
-          aria-invalid={error ? true : undefined}
+          aria-invalid={errors.password ? true : undefined}
           onChange={(event) => {
             onChange({ password: event.target.value });
-            clearError();
+            clearError("password");
           }}
         />
+        <FieldError>{errors.password}</FieldError>
+
         <Input
           type={show ? "text" : "password"}
           autoComplete="new-password"
           placeholder="Confirm"
           value={form.confirm}
-          aria-invalid={error ? true : undefined}
+          aria-invalid={errors.confirm ? true : undefined}
           onChange={(event) => {
             onChange({ confirm: event.target.value });
-            clearError();
+            clearError("confirm");
           }}
         />
-        <FieldError>{error}</FieldError>
+        <FieldError>{errors.confirm}</FieldError>
 
         <label className="flex items-center gap-2 text-sm text-muted-foreground">
           <input

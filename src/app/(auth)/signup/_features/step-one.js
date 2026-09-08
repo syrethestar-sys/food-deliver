@@ -50,7 +50,7 @@ export function StepOne({ form, onChange, onNext }) {
         </Field>
       </div>
 
-      <Button type="submit" className="h-9 w-full" disabled={!form.email}>
+      <Button type="submit" className="h-9 w-full cursor-pointer" disabled={!form.email}>
         Let&apos;s Go
       </Button>
 
