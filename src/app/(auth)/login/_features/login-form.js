@@ -47,6 +47,8 @@ export function LoginForm({
       localStorage.setItem("user", JSON.stringify(response.data.user));
       setUser({ email });
       router.push("/admin/food-menu");
+      console.log(response, `response`);
+      
     } catch (err) {
       const message =
         `${err.response?.data?.message} `??
