@@ -34,8 +34,8 @@ export function AdminSidebar() {
               href={href}
               className={
                 active
-                  ? "flex items-center gap-3 rounded-full bg-[#18181B] px-4 py-2.5 text-sm font-medium text-white"
-                  : "flex items-center gap-3 rounded-full px-4 py-2.5 text-sm font-medium text-muted-foreground"
+                  ? "flex items-center gap-3 rounded-full bg-[#18181B] px-4 py-2.5 text-sm font-medium text-white transition-all duration-200 ease-out active:scale-[0.98]"
+                  : "flex items-center gap-3 rounded-full px-4 py-2.5 text-sm font-medium text-muted-foreground transition-all duration-200 ease-out hover:bg-muted hover:text-foreground active:scale-[0.98]"
               }
             >
               <Icon className="size-4" />

@@ -1,10 +1,10 @@
 import { FoodCard } from "../_components/food-card";
 
-export function FoodGrid({ foods = [] }) {
+export function FoodGrid({ dishes = [] }) {
   return (
-    <div className="grid gap-4">
-      {foods.map((food) => (
-        <FoodCard key={food.id} food={food} />
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {dishes.map((dish) => (
+        <FoodCard key={dish.id} dish={dish} />
       ))}
     </div>
   );

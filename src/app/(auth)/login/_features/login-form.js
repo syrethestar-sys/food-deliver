@@ -21,7 +21,7 @@ export function LoginForm({
   onPasswordChange = () => {},
 }) {
   const router = useRouter();
-  const { setUser } = useAuth();
+  const { login } = useAuth();
   const [error, setError] = useState("");
   const [show, setShow] = useState(false);
 
@@ -43,18 +43,12 @@ export function LoginForm({
 
     try {
       const response = await server.post("/auth/login", { email, password });
-
-      localStorage.setItem("user", JSON.stringify(response.data.user));
-      setUser({ email });
-      router.push("/admin/food-menu");
-      console.log(response, `response`);
-      
+      login(response.data.user);
     } catch (err) {
       const message =
-        `${err.response?.data?.message} `??
+        err.response?.data?.message ??
         "Something went wrong. Please try again.";
       setError(message);
-      console.error(err);      
     }
   };
 

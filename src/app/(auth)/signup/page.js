@@ -13,7 +13,7 @@ const TOTAL_STEPS = 2;
 
 export default function SignUpPage() {
   const router = useRouter();
-  const { setUser } = useAuth();
+  const { login } = useAuth();
   const [step, setStep] = useState(1);
   const [form, setForm] = useState({ email: "", password: "", confirm: "" });
   const [errors, setErrors] = useState({});
@@ -41,10 +41,11 @@ export default function SignUpPage() {
         email: form.email,
         password: form.password,
       });
-      setUser({ email: form.email });
-      router.push("/admin/food-menu");
-      localStorage.setItem('user', JSON.stringify(response.data.user))
-      console.log(response,`response`);
+      const res = await server.post("/auth/login", {
+        email: form.email,
+        password: form.password,
+      });
+      login(res.data.user);
     } catch (err) {
       setErrors({ confirm: ["Something went wrong. Please try again."] });
       console.error(err);

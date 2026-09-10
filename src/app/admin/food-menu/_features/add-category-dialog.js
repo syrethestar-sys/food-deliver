@@ -33,11 +33,20 @@ export function AddCategoryDialog({ open, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20">
-      <form onSubmit={submit} className="w-90 rounded-xl bg-white p-5 shadow-lg">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 animate-in fade-in-0 duration-200">
+      <form
+        onSubmit={submit}
+        className="w-90 rounded-xl bg-white p-5 shadow-lg animate-in fade-in-0 zoom-in-95 duration-200 ease-out"
+      >
         <div className="mb-4 flex items-center justify-between">
           <h3 className="font-semibold">Add new category</h3>
-          <button type="button" onClick={onClose}>✕</button>
+          <button
+            type="button"
+            onClick={onClose}
+            className="cursor-pointer transition-transform duration-200 ease-out hover:scale-110 active:scale-90"
+          >
+            ✕
+          </button>
         </div>
         <label className="text-sm">Category name</label>
         <input
@@ -51,7 +60,7 @@ export function AddCategoryDialog({ open, onClose }) {
           <button
             type="submit"
             disabled={submitting}
-            className="rounded-md bg-[#18181B] px-4 py-2 text-sm text-white disabled:opacity-50"
+            className="rounded-md bg-[#18181B] px-4 py-2 text-sm text-white cursor-pointer transition-all duration-200 ease-out hover:bg-[#18181B]/85 active:scale-[0.97] disabled:opacity-50 disabled:pointer-events-none"
           >
             Add category
           </button>

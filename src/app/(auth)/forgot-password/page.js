@@ -9,15 +9,14 @@ import { VerifyEmail } from "./_features/verify-email";
 
 export default function ForgotPasswordPage() {
   const router = useRouter();
-  const { setUser } = useAuth();
+  const { login } = useAuth();
   const [step, setStep] = useState(1);
   const [form, setForm] = useState({ email: "" });
 
   const update = (patch) => setForm((current) => ({ ...current, ...patch }));
 
   const complete = () => {
-    setUser({ email: form.email });
-    router.push("/");
+    router.push("/login");
   };
 
   return (
