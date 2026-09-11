@@ -1,15 +1,17 @@
 import { CategoryChips } from "./_features/category-chips";
 import { DishGrid } from "./_features/dish-grid";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:1000";
+
 async function getCategories() {
-  const res = await fetch("http://localhost:1000/food-category/get", {
+  const res = await fetch(`${API_URL}/food-category/get`, {
     cache: "no-store",
   });
   const data = await res.json();
   return data.foodCategory ?? [];
 }
 async function getFoods() {
-  const res = await fetch("http://localhost:1000/food/get", {
+  const res = await fetch(`${API_URL}/food/get`, {
     cache: "no-store",
   });
   const data = await res.json();
