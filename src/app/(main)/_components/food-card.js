@@ -1,8 +1,11 @@
 import { Plus } from "lucide-react";
 
-export function FoodCard({ dish }) {
+export function FoodCard({ dish, onSelect }) {
   return (
-    <article className="group rounded-2xl bg-white p-3 shadow-sm transition-all duration-200 ease-out hover:shadow-md">
+    <article
+      onClick={() => onSelect(dish)}
+      className="group rounded-2xl bg-white p-3 shadow-sm transition-all duration-200 ease-out hover:shadow-md"
+    >
       <div className="relative overflow-hidden rounded-xl">
         {dish.image ? (
           <img
@@ -15,7 +18,11 @@ export function FoodCard({ dish }) {
         )}
         <button
           type="button"
-          className="absolute bottom-2 right-2 flex size-9 items-center justify-center rounded-full bg-white text-[#EF4444] shadow-md transition-all duration-200 ease-out hover:scale-110 hover:bg-[#EF4444] hover:text-white active:scale-95 cursor-pointer"
+          onClick={(e) => {
+            e.stopPropagation();
+            onSelect(dish);
+          }}
+          className="absolute bottom-2 right-2 ..."
         >
           <Plus className="size-4" />
         </button>

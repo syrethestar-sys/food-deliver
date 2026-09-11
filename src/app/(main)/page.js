@@ -1,6 +1,7 @@
 import { Menu } from "./_features/menu";
-import Image from "next/image";
-import menuPicture from "@/components/menuPicture.jpg";
+
+const HERO_IMAGE =
+  "https://res.cloudinary.com/crbcsumf/image/upload/f_auto,q_auto,w_1440/food-delivery/site/yf9stc2adbyjzbr7zvrr.png";
 
 async function getCategories() {
   const res = await fetch("http://localhost:1000/food-category/get", {
@@ -33,11 +34,10 @@ export default async function Home() {
   return (
     <div>
       <section className="mx-auto max-w-6xl px-4 pt-6">
-        <Image
-          src={menuPicture}
+        <img
+          src={HERO_IMAGE}
           alt="Today's offer"
           className="w-full rounded-2xl object-cover"
-          priority
         />
       </section>
 

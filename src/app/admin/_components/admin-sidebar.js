@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutGrid, Truck, Settings } from "lucide-react";
+import { Truck, Settings, LayoutDashboard } from "lucide-react";
 
 const navItems = [
-  { label: "Food menu", href: "/admin/food-menu", icon: LayoutGrid },
+  { label: "Food menu", href: "/admin/food-menu", icon: LayoutDashboard },
   { label: "Orders", href: "/admin/orders", icon: Truck },
   { label: "Settings", href: "/admin/settings", icon: Settings },
 ];
@@ -38,7 +38,7 @@ export function AdminSidebar() {
                   : "flex items-center gap-3 rounded-full px-4 py-2.5 text-sm font-medium text-muted-foreground transition-all duration-200 ease-out hover:bg-muted hover:text-foreground active:scale-[0.98]"
               }
             >
-              <Icon className="size-4" />
+              <Icon cl assName="size-4" />
               {label}
             </Link>
           );
