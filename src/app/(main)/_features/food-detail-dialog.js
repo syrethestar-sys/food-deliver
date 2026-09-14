@@ -33,7 +33,7 @@ export const FoodDetailDialog = ({ dish, onClose }) => {
             <h3 className="text-lg font-semibold text-[#EF4444]">
               {dish.name}
             </h3>
-            <button type="button" onClick={onClose}>
+            <button type="button" onClick={onClose} className="cursor-pointer">
               ✕
             </button>
           </div>
@@ -53,11 +53,16 @@ export const FoodDetailDialog = ({ dish, onClose }) => {
               <button
                 type="button"
                 onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                className="cursor-pointer hover:scale-120 transition-all hover:shadow-lg"
               >
                 −
               </button>
               <span className="w-4 text-center">{quantity}</span>
-              <button type="button" onClick={() => setQuantity((q) => q + 1)}>
+              <button
+                type="button"
+                onClick={() => setQuantity((q) => q + 1)}
+                className="cursor-pointer hover:scale-120 transition-all hover:shadow-lg"
+              >
                 +
               </button>
             </div>
@@ -66,7 +71,7 @@ export const FoodDetailDialog = ({ dish, onClose }) => {
           <button
             type="button"
             onClick={handleAdd}
-            className="mt-4 rounded-lg bg-[#18181B] py-2.5 text-sm font-medium text-white"
+            className="mt-4 rounded-lg bg-[#18181B] py-2.5 text-sm font-medium text-white cursor-pointer"
           >
             Add to cart
           </button>

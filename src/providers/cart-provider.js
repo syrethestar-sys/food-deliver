@@ -6,18 +6,20 @@ const CartContext = createContext(null);
 
 export function CartProvider({ children }) {
   const [items, setItems] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
 
-  // 1. load once on mount
   useEffect(() => {
     try {
       const saved = localStorage.getItem("cart");
+      // localStorage doesn't exist during SSR, so this can only run after
+      // mount; the initial [] keeps server/client markup matching on hydration.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       if (saved) setItems(JSON.parse(saved));
     } catch (err) {
       console.error(err);
     }
   }, []);
 
-  // 2. save on every change
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(items));
   }, [items]);
@@ -37,6 +39,7 @@ export function CartProvider({ children }) {
   const removeItem = (id) => {
     setItems((current) => current.filter((i) => i.id !== id));
   };
+  const clearCart = () => setItems([]);
 
   const changeQuantity = (id, quantity) => {
     if (quantity < 1) return removeItem(id);
@@ -44,13 +47,25 @@ export function CartProvider({ children }) {
       current.map((i) => (i.id === id ? { ...i, quantity } : i)),
     );
   };
-
+  const open = () => setIsOpen(true);
+  const close = () => setIsOpen(false);
   const count = items.reduce((sum, i) => sum + i.quantity, 0);
   const total = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
 
   return (
     <CartContext.Provider
-      value={{ items, addItem, removeItem, changeQuantity, count, total }}
+      value={{
+        items,
+        addItem,
+        removeItem,
+        changeQuantity,
+        count,
+        total,
+        isOpen,
+        open,
+        close,
+        clearCart,
+      }}
     >
       {children}
     </CartContext.Provider>

@@ -14,6 +14,9 @@ export function AuthProvider({ children }) {
     try {
       const savedUser = localStorage.getItem("user");
       if (savedUser) {
+        // localStorage doesn't exist during SSR, so this can only run after
+        // mount; the initial null keeps server/client markup matching on hydration.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setUser(JSON.parse(savedUser));
       }
     } catch (err) {
@@ -24,21 +27,28 @@ export function AuthProvider({ children }) {
 
   const login = (userData) => {
     setUser(userData);
-    localStorage.setItem("user", JSON.stringify(userData))
-    if(userData.role === "admin"){
-      router.push("/admin/food-menu")
-    }else {
-      router.push("/")
+    localStorage.setItem("user", JSON.stringify(userData));
+    if (userData.role === "admin") {
+      router.push("/admin/food-menu");
+    } else {
+      router.push("/");
     }
   };
 
   const logout = () => {
-    setUser(null)
-    localStorage.removeItem("user")
-    router.push("/login")
-  }
+    setUser(null);
+    localStorage.removeItem("user");
+    router.push("/login");
+  };
+  const updateAddress = (address) => {
+    setUser((current) => {
+      const updated = { ...current, address };
+      localStorage.setItem("user", JSON.stringify(updated));
+      return updated;
+    });
+  };
   return (
-    <AuthContext.Provider value={{ user, ready, login, logout }}>
+    <AuthContext.Provider value={{ user, ready, login, logout, updateAddress }}>
       {children}
     </AuthContext.Provider>
   );

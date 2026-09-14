@@ -11,7 +11,7 @@ export function FoodCard({ dish, onSelect }) {
           <img
             src={dish.image}
             alt={dish.name}
-            className="aspect-4/3 w-full object-cover transition-transform duration-300 ease-out group-hover:scale-105"
+            className="aspect-4/3 w-full object-cover transition-transform duration-300 ease-out group-hover:scale-105 cursor-pointer"
           />
         ) : (
           <div className="aspect-4/3 w-full bg-zinc-100" />
@@ -22,9 +22,9 @@ export function FoodCard({ dish, onSelect }) {
             e.stopPropagation();
             onSelect(dish);
           }}
-          className="absolute bottom-2 right-2 ..."
+          className="absolute bottom-2 right-2 bg-white rounded-full transform transition-all duration-300 ease-in-out hover:scale-120 hover:shadow-lg active:scale-95 hover:bg-black hover:text-white transition-all duration-300 hover:rotate-180"
         >
-          <Plus className="size-4" />
+          <Plus className="size-5 cursor-pointer " />
         </button>
       </div>
 

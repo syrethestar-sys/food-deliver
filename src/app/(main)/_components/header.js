@@ -8,7 +8,7 @@ import { useCart } from "@/providers/cart-provider";
 
 export function Header() {
   const { user, logout } = useAuth();
-  const { count } = useCart();
+  const { count, open } = useCart();
 
   return (
     <header className="flex items-center justify-between px-8 py-3">
@@ -34,7 +34,10 @@ export function Header() {
                 </span>
               </p>
             </button>
-            <button className="relative flex justify-center items-center w-9 h-9 rounded-full bg-[white] border cursor-pointer">
+            <button
+              onClick={open}
+              className="relative flex justify-center items-center w-9 h-9 rounded-full bg-[white] border cursor-pointer"
+            >
               <ShoppingCart color="black" size={16} />
               {count > 0 && (
                 <span className="absolute top-[-1] right-[-1] flex size-4 items-center justify-center rounded-full bg-[#EF4444] text-[10px] text-white">
