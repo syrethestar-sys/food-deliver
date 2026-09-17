@@ -6,6 +6,7 @@ import { server } from "@/app/api/api";
 import { PartyPopper, ShoppingCart, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
+import { OrderList } from "../orders/_features/order-list";
 
 const DELIVERY_FEE = 0.99;
 
@@ -25,6 +26,7 @@ export function CartSheet() {
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [orderResult, setOrderResult] = useState(null);
   const [checkoutError, setCheckoutError] = useState("");
+  const [activeTab, setActiveTab] = useState("cart");
 
   const searchReady = isEditingAddress && addressDraft.trim().length >= 3;
   const visibleSuggestions = searchReady ? suggestions : [];
@@ -143,6 +145,32 @@ export function CartSheet() {
           </button>
         </div>
 
+        {/* ---- cart / order tabs ---- */}
+        <div className="flex rounded-full border p-1">
+          <button
+            type="button"
+            onClick={() => setActiveTab("cart")}
+            className={`flex-1 cursor-pointer rounded-full py-1.5 text-sm font-medium transition-colors ${
+              activeTab === "cart" ? "bg-[#EF4444] text-white" : "text-[#18181B]"
+            }`}
+          >
+            Cart
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("order")}
+            className={`flex-1 cursor-pointer rounded-full py-1.5 text-sm font-medium transition-colors ${
+              activeTab === "order" ? "bg-[#EF4444] text-white" : "text-[#18181B]"
+            }`}
+          >
+            Order
+          </button>
+        </div>
+
+        {activeTab === "order" && <OrderList />}
+
+        {activeTab === "cart" && (
+          <>
         {/* ---- cart items ---- */}
         {items.length === 0 ? (
           <p className="text-sm text-muted-foreground">Your cart is empty.</p>
@@ -283,6 +311,8 @@ export function CartSheet() {
             {isPlacingOrder ? "Placing order..." : "Checkout"}
           </button>
         </div>
+          </>
+        )}
       </div>
 
       {orderResult && (

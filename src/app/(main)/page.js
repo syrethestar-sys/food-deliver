@@ -19,10 +19,8 @@ async function getFoods() {
   const data = await res.json();
   return data.foods ?? [];
 }
-
 export default async function Home() {
   const [categories, foods] = await Promise.all([getCategories(), getFoods()]);
-
   const dishes = foods.map((f) => ({
     id: f._id,
     name: f.foodName,

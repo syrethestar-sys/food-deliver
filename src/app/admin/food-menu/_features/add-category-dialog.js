@@ -1,14 +1,13 @@
 "use client";
 
+import { useCategory } from "@/providers/category-provider";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { server } from "@/app/api/api";
 
 export function AddCategoryDialog({ open, onClose }) {
-  const router = useRouter();
   const [name, setName] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const { create } = useCategory();
 
   if (!open) return null;
 
@@ -17,13 +16,12 @@ export function AddCategoryDialog({ open, onClose }) {
     setSubmitting(true);
     setError("");
     try {
-      await server.post("/food-category/create", { name });
+      await create(name)
       setName("");
       onClose();
-      router.refresh();           
     } catch (err) {
       if (err.response?.status === 409) {
-        setError(err.response.data.message); 
+        setError(err.response.data.message);
       } else {
         setError("Something went wrong. Try again.");
       }

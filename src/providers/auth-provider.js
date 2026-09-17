@@ -14,9 +14,6 @@ export function AuthProvider({ children }) {
     try {
       const savedUser = localStorage.getItem("user");
       if (savedUser) {
-        // localStorage doesn't exist during SSR, so this can only run after
-        // mount; the initial null keeps server/client markup matching on hydration.
-        // eslint-disable-next-line react-hooks/set-state-in-effect
         setUser(JSON.parse(savedUser));
       }
     } catch (err) {

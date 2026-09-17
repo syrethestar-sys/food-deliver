@@ -3,15 +3,41 @@
 import Link from "next/link";
 import { useAuth } from "@/providers/auth-provider";
 import { Logo } from "../../../components/Logo";
-import { ChevronRight, MapPin, ShoppingCart, User } from "lucide-react";
+import {
+  ChevronRight,
+  MapPin,
+  ShieldUser,
+  ShoppingCart,
+  User,
+} from "lucide-react";
 import { useCart } from "@/providers/cart-provider";
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { UserSettings } from "../_features/user-settings";
 
 export function Header() {
   const { user, logout } = useAuth();
   const { count, open } = useCart();
+  const router = useRouter();
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const settingsRef = useRef(null);
 
+  const handleAdminButton = () => {
+    router.push("/admin/food-menu");
+  };
+
+  useEffect(() => {
+    if (!isSettingsOpen) return;
+    const handleClickOutside = (e) => {
+      if (settingsRef.current && !settingsRef.current.contains(e.target)) {
+        setIsSettingsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isSettingsOpen]);
   return (
-    <header className="flex items-center justify-between px-8 py-3">
+    <header className="flex items-center justify-between px-8 py-3 ">
       <Link href="/" className="flex gap-2 items-center">
         <Logo />
         <div className="flex flex-col">
@@ -23,22 +49,34 @@ export function Header() {
       </Link>
 
       <div className="flex items-center gap-3">
+        {user?.role === "admin" && (
+          <button
+            onClick={handleAdminButton}
+            className="w-9 h-9 flex border rounded-full items-center justify-center cursor-pointer text-[#EF4444] hover:bg-[#EF4444] hover:text-white transition-all duration-300 ease-in-out"
+          >
+            <ShieldUser size={20} strokeWidth={1.5} />
+          </button>
+        )}
         {user ? (
           <div className="flex items-center gap-3">
-            <button className="h-9 flex justify-center items-center gap-1 rounded-full border text-sm text-[12px] p-2 cursor-pointer">
+            <button
+              onClick={open}
+              className="h-9 flex justify-center items-center gap-1 rounded-full border text-sm text-[12px] p-2 cursor-pointer"
+            >
               <MapPin color="#EF4444" size={20} />
               <p className=" text-[#EF4444] flex items-center gap-1">
                 Delivery address:
-                <span className="text-[#71717A] flex items-center">
-                  Add location <ChevronRight size={16} />
+                <span className="text-[#71717A] flex max-w-40 items-center truncate">
+                  {user.address || "Add location"}
                 </span>
+                <ChevronRight size={16} />
               </p>
             </button>
             <button
               onClick={open}
-              className="relative flex justify-center items-center w-9 h-9 rounded-full bg-[white] border cursor-pointer"
+              className="relative flex justify-center items-center w-9 h-9 rounded-full bg-[white] border cursor-pointer hover:bg-[#EF4444] hover:text-white transition-all duration-300 ease-in-out"
             >
-              <ShoppingCart color="black" size={16} />
+              <ShoppingCart size={16} />
               {count > 0 && (
                 <span className="absolute top-[-1] right-[-1] flex size-4 items-center justify-center rounded-full bg-[#EF4444] text-[10px] text-white">
                   {count}
@@ -56,12 +94,17 @@ export function Header() {
         )}
 
         {user ? (
-          <button
-            onClick={logout}
-            className="flex justify-center items-center w-9 h-9 rounded-full p-2 bg-[#EF4444] cursor-pointer"
-          >
-            <User color="white" size={16} />
-          </button>
+          <div className="relative" ref={settingsRef}>
+            <button
+              onClick={() => setIsSettingsOpen((open) => !open)}
+              className="flex justify-center items-center w-9 h-9 rounded-full p-2 bg-[#EF4444] cursor-pointer"
+            >
+              <User color="white" size={16} />
+            </button>
+            {isSettingsOpen && (
+              <UserSettings user={user} onSignOut={logout} />
+            )}
+          </div>
         ) : (
           <Link
             href="/login"

@@ -1,3 +1,4 @@
+import { CategoryProvider } from "@/providers/category-provider";
 import { CategoryChips } from "./_features/category-chips";
 import { DishGrid } from "./_features/dish-grid";
 
@@ -45,7 +46,9 @@ export default async function FoodMenuPage() {
 
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-6">
-      <CategoryChips chips={chips} totalCount={foods.length} />
+      <CategoryProvider>
+        <CategoryChips chips={chips} totalCount={foods.length} />
+      </CategoryProvider>
       <DishGrid sections={sections} categories={categories} />
     </div>
   );

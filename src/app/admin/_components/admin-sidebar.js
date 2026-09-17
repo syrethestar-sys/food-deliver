@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Truck, Settings, LayoutDashboard } from "lucide-react";
+import { Logo } from "@/components/Logo";
 
 const navItems = [
   { label: "Food menu", href: "/admin/food-menu", icon: LayoutDashboard },
@@ -11,19 +12,27 @@ const navItems = [
 ];
 
 export function AdminSidebar() {
+  const router = useRouter();
   const pathname = usePathname();
+
+  const handleBack = () => {
+    router.push("/");
+  };
 
   return (
     <aside className="hidden w-60 shrink-0 flex-col gap-10 bg-white px-4 py-6 lg:flex">
-      <div className="flex items-center gap-2 px-2">
-        <span className="flex size-8 items-center justify-center rounded-full bg-[#EF4444]" />
-        <span className="flex flex-col leading-tight">
-          <span className="text-lg font-bold">NomNom</span>
-          <span className="text-[11px] text-muted-foreground">
-            Swift delivery
-          </span>
+      <button onClick={handleBack} className="flex items-center gap-2 px-2 cursor-pointer">
+        <span className="flex leading-tight gap-2 items-center">
+          <Logo />
+          <div className="flex flex-col">
+            {" "}
+            <span className="text-[20px] font-semibold">NomNom</span>
+            <span className="text-[11px] text-muted-foreground">
+              Swift delivery
+            </span>
+          </div>
         </span>
-      </div>
+      </button>
 
       <nav className="flex flex-col gap-2">
         {navItems.map(({ label, href, icon: Icon }) => {

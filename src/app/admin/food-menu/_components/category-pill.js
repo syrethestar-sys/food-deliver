@@ -1,3 +1,5 @@
+import { X } from "lucide-react";
+
 export function CategoryPill({ label, count, active = false }) {
   return (
     <button
