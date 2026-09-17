@@ -47,7 +47,7 @@ export default async function FoodMenuPage() {
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-6">
       <CategoryProvider>
-        <CategoryChips chips={chips} totalCount={foods.length} />
+        <CategoryChips chips={chips} categories={categories} totalCount={foods.length} />
       </CategoryProvider>
       <DishGrid sections={sections} categories={categories} />
     </div>

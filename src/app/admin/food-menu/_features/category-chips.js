@@ -5,7 +5,7 @@ import { Plus, X } from "lucide-react";
 import { AddCategoryDialog } from "./add-category-dialog";
 import { useCategory } from "@/providers/category-provider";
 
-export function CategoryChips({ chips, totalCount }) {
+export function CategoryChips({ chips, categories, totalCount }) {
   const [activeId, setActiveId] = useState(null);
   const [addOpen, setAddOpen] = useState(false);
   const [error, setError] = useState("");
@@ -13,6 +13,7 @@ export function CategoryChips({ chips, totalCount }) {
   const { remove } = useCategory();
 
   const submit = async (id) => {
+     if (!confirm("Delete this category?")) return;
     setSubmitting(true);
     setError("");
     try {
@@ -43,7 +44,7 @@ export function CategoryChips({ chips, totalCount }) {
         >
           All Dishes
           <span className="ml-2 rounded-full bg-[#18181B] px-1.5 text-[11px] text-white">
-            {totalCount}
+            {categories.length}
           </span>
         </button>
 

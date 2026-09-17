@@ -22,9 +22,11 @@ export function AuthProvider({ children }) {
     setReady(true);
   }, []);
 
-  const login = (userData) => {
+  const login = (userData, token) => {
     setUser(userData);
     localStorage.setItem("user", JSON.stringify(userData));
+    localStorage.setItem("token", token);
+
     if (userData.role === "admin") {
       router.push("/admin/food-menu");
     } else {
@@ -35,6 +37,7 @@ export function AuthProvider({ children }) {
   const logout = () => {
     setUser(null);
     localStorage.removeItem("user");
+    localStorage.removeItem("token");
     router.push("/login");
   };
   const updateAddress = (address) => {

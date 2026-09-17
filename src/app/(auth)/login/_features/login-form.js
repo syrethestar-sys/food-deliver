@@ -43,7 +43,7 @@ export function LoginForm({
 
     try {
       const response = await server.post("/auth/login", { email, password });
-      login(response.data.user);
+      login(response.data.user, response.data.token);
     } catch (err) {
       const message =
         err.response?.data?.message ??
