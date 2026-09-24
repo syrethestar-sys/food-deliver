@@ -20,7 +20,7 @@ export function OrderList() {
     }
 
     server
-      .get("/order/my-orders", { headers: { "x-user-id": user.id } })
+      .get("/order/my-orders")
       .then((response) => setOrders(response.data.orders))
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));

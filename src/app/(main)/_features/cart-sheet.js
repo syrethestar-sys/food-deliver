@@ -98,17 +98,13 @@ export function CartSheet() {
     setIsPlacingOrder(true);
     setCheckoutError("");
     try {
-      const response = await server.post(
-        "/order/create",
-        {
-          items: items.map((item) => ({
-            foodId: item.id,
-            quantity: item.quantity,
-          })),
-          address: user.address,
-        },
-        { headers: { "x-user-id": user.id } },
-      );
+      const response = await server.post("/order/create", {
+        items: items.map((item) => ({
+          foodId: item.id,
+          quantity: item.quantity,
+        })),
+        address: user.address,
+      });
       setOrderResult(response.data.order);
       clearCart();
     } catch (err) {
@@ -151,7 +147,9 @@ export function CartSheet() {
             type="button"
             onClick={() => setActiveTab("cart")}
             className={`flex-1 cursor-pointer rounded-full py-1.5 text-sm font-medium transition-colors ${
-              activeTab === "cart" ? "bg-[#EF4444] text-white" : "text-[#18181B]"
+              activeTab === "cart"
+                ? "bg-[#EF4444] text-white"
+                : "text-[#18181B]"
             }`}
           >
             Cart
@@ -160,7 +158,9 @@ export function CartSheet() {
             type="button"
             onClick={() => setActiveTab("order")}
             className={`flex-1 cursor-pointer rounded-full py-1.5 text-sm font-medium transition-colors ${
-              activeTab === "order" ? "bg-[#EF4444] text-white" : "text-[#18181B]"
+              activeTab === "order"
+                ? "bg-[#EF4444] text-white"
+                : "text-[#18181B]"
             }`}
           >
             Order
@@ -171,146 +171,154 @@ export function CartSheet() {
 
         {activeTab === "cart" && (
           <>
-        {/* ---- cart items ---- */}
-        {items.length === 0 ? (
-          <p className="text-sm text-muted-foreground">Your cart is empty.</p>
-        ) : (
-          <div className="flex flex-col gap-3">
-            {items.map((item) => (
-              <div key={item.id} className="flex gap-3 border-b pb-3">
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="h-31 w-31 rounded-lg object-cover"
-                />
-                <div className="flex flex-1 flex-col">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <p className="text-sm font-semibold text-[#EF4444]">
-                        {item.name}
-                      </p>
-                      <p>{item.ingredients}</p>
-                    </div>
+            {/* ---- cart items ---- */}
+            {items.length === 0 ? (
+              <p className="text-sm text-muted-foreground">
+                Your cart is empty.
+              </p>
+            ) : (
+              <div className="flex flex-col gap-3">
+                {items.map((item) => (
+                  <div key={item.id} className="flex gap-3 border-b pb-3">
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className="h-31 w-31 rounded-lg object-cover"
+                    />
+                    <div className="flex flex-1 flex-col">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <p className="text-sm font-semibold text-[#EF4444]">
+                            {item.name}
+                          </p>
+                          <p>{item.ingredients}</p>
+                        </div>
 
-                    <button
-                      type="button"
-                      onClick={() => handleRemove(item.id)}
-                      className="cursor-pointer transition-all duration-300 hover:rotate-180 hover:scale-140"
-                    >
-                      <X size={16} />
-                    </button>
-                  </div>
-                  <div className="mt-auto flex items-center justify-between">
-                    <div className="flex items-center gap-3 rounded-full border px-2 py-1">
-                      <button
-                        type="button"
-                        onClick={() => handleDecrement(item)}
-                        className="cursor-pointer hover:scale-120 transition-all hover:shadow-lg"
-                      >
-                        −
-                      </button>
-                      <span className="w-4 text-center">{item.quantity}</span>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          changeQuantity(item.id, item.quantity + 1)
-                        }
-                        className="cursor-pointer hover:scale-120 transition-all hover:shadow-lg"
-                      >
-                        +
-                      </button>
+                        <button
+                          type="button"
+                          onClick={() => handleRemove(item.id)}
+                          className="cursor-pointer transition-all duration-300 hover:rotate-180 hover:scale-140"
+                        >
+                          <X size={16} />
+                        </button>
+                      </div>
+                      <div className="mt-auto flex items-center justify-between">
+                        <div className="flex items-center gap-3 rounded-full border px-2 py-1">
+                          <button
+                            type="button"
+                            onClick={() => handleDecrement(item)}
+                            className="cursor-pointer hover:scale-120 transition-all hover:shadow-lg"
+                          >
+                            −
+                          </button>
+                          <span className="w-4 text-center">
+                            {item.quantity}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              changeQuantity(item.id, item.quantity + 1)
+                            }
+                            className="cursor-pointer hover:scale-120 transition-all hover:shadow-lg"
+                          >
+                            +
+                          </button>
+                        </div>
+                        <p className="text-sm font-semibold">
+                          ${item.price.toFixed(2)}
+                        </p>
+                      </div>
                     </div>
-                    <p className="text-sm font-semibold">
-                      ${item.price.toFixed(2)}
-                    </p>
                   </div>
-                </div>
+                ))}
               </div>
-            ))}
-          </div>
-        )}
+            )}
 
-        {/* ---- address block ---- */}
-        <div>
-          <p className="mb-2 text-sm font-semibold">Delivery location</p>
-          {user?.address && !isEditingAddress ? (
-            <div className="flex items-center justify-between rounded-lg border p-2">
-              <p className="text-sm">{user.address}</p>
-              <button
-                type="button"
-                onClick={startEditingAddress}
-                className="cursor-pointer text-sm text-[#EF4444]"
-              >
-                Edit
-              </button>
+            {/* ---- address block ---- */}
+            <div>
+              <p className="mb-2 text-sm font-semibold">Delivery location</p>
+              {user?.address && !isEditingAddress ? (
+                <div className="flex items-center justify-between rounded-lg border p-2">
+                  <p className="text-sm">{user.address}</p>
+                  <button
+                    type="button"
+                    onClick={startEditingAddress}
+                    className="cursor-pointer text-sm text-[#EF4444]"
+                  >
+                    Edit
+                  </button>
+                </div>
+              ) : (
+                <div className="relative flex flex-col gap-2">
+                  <AddressMap
+                    position={position}
+                    onPositionChange={handleMapPositionChange}
+                  />
+                  <textarea
+                    value={addressDraft}
+                    onChange={(e) => setAddressDraft(e.target.value)}
+                    placeholder="Please share your complete address"
+                    className="w-full rounded-lg border p-2 text-sm"
+                  />
+                  {visibleSuggestions.length > 0 && (
+                    <ul className="absolute top-full z-10 mt-1 w-full rounded-lg border bg-white shadow-lg">
+                      {visibleSuggestions.map((place) => (
+                        <li key={place.place_id}>
+                          <button
+                            type="button"
+                            onClick={() => selectSuggestion(place)}
+                            className="block w-full cursor-pointer px-3 py-2 text-left text-sm hover:bg-[#F4F4F5]"
+                          >
+                            {place.display_name}
+                          </button>
+                        </li>
+                      ))}
+                      <li className="px-3 py-1 text-right text-[10px] text-muted-foreground">
+                        Search by OpenStreetMap
+                      </li>
+                    </ul>
+                  )}
+                  <button
+                    type="button"
+                    onClick={saveAddress}
+                    className="self-end rounded-lg bg-[#18181B] px-3 py-1.5 text-sm text-white cursor-pointer"
+                  >
+                    Save
+                  </button>
+                </div>
+              )}
             </div>
-          ) : (
-            <div className="relative flex flex-col gap-2">
-              <AddressMap
-                position={position}
-                onPositionChange={handleMapPositionChange}
-              />
-              <textarea
-                value={addressDraft}
-                onChange={(e) => setAddressDraft(e.target.value)}
-                placeholder="Please share your complete address"
-                className="w-full rounded-lg border p-2 text-sm"
-              />
-              {visibleSuggestions.length > 0 && (
-                <ul className="absolute top-full z-10 mt-1 w-full rounded-lg border bg-white shadow-lg">
-                  {visibleSuggestions.map((place) => (
-                    <li key={place.place_id}>
-                      <button
-                        type="button"
-                        onClick={() => selectSuggestion(place)}
-                        className="block w-full cursor-pointer px-3 py-2 text-left text-sm hover:bg-[#F4F4F5]"
-                      >
-                        {place.display_name}
-                      </button>
-                    </li>
-                  ))}
-                  <li className="px-3 py-1 text-right text-[10px] text-muted-foreground">
-                    Search by OpenStreetMap
-                  </li>
-                </ul>
+
+            {/* ---- totals + checkout ---- */}
+            <div className="mt-auto flex flex-col gap-2 border-t pt-4">
+              <div className="flex justify-between text-sm">
+                <p>Items</p>
+                <p>{items.length === 0 ? "-" : `$${total.toFixed(2)}`}</p>
+              </div>
+              <div className="flex justify-between text-sm">
+                <p>Shipping</p>
+                <p>
+                  {items.length === 0 ? "-" : `$${DELIVERY_FEE.toFixed(2)}`}
+                </p>
+              </div>
+              <div className="flex justify-between border-t pt-2 font-semibold">
+                <p>Total</p>
+                <p>{items.length === 0 ? "-" : `$${grandTotal.toFixed(2)}`}</p>
+              </div>
+              {checkoutError && (
+                <p className="text-sm text-[#EF4444]">{checkoutError}</p>
               )}
               <button
                 type="button"
-                onClick={saveAddress}
-                className="self-end rounded-lg bg-[#18181B] px-3 py-1.5 text-sm text-white cursor-pointer"
+                onClick={handleCheckout}
+                disabled={
+                  items.length === 0 || !user?.address || isPlacingOrder
+                }
+                className="mt-2 rounded-lg bg-[#EF4444] py-2.5 text-sm font-medium text-white cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
               >
-                Save
+                {isPlacingOrder ? "Placing order..." : "Checkout"}
               </button>
             </div>
-          )}
-        </div>
-
-        {/* ---- totals + checkout ---- */}
-        <div className="mt-auto flex flex-col gap-2 border-t pt-4">
-          <div className="flex justify-between text-sm">
-            <p>Items</p>
-            <p>{items.length === 0 ? "-" : `$${total.toFixed(2)}`}</p>
-          </div>
-          <div className="flex justify-between text-sm">
-            <p>Shipping</p>
-            <p>{items.length === 0 ? "-" : `$${DELIVERY_FEE.toFixed(2)}`}</p>
-          </div>
-          <div className="flex justify-between border-t pt-2 font-semibold">
-            <p>Total</p>
-            <p>{items.length === 0 ? "-" : `$${grandTotal.toFixed(2)}`}</p>
-          </div>
-          {checkoutError && (
-            <p className="text-sm text-[#EF4444]">{checkoutError}</p>
-          )}
-          <button
-            type="button"
-            onClick={handleCheckout}
-            disabled={items.length === 0 || !user?.address || isPlacingOrder}
-            className="mt-2 rounded-lg bg-[#EF4444] py-2.5 text-sm font-medium text-white cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {isPlacingOrder ? "Placing order..." : "Checkout"}
-          </button>
-        </div>
           </>
         )}
       </div>

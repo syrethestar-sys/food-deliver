@@ -1,20 +1,24 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { OrdersTable } from "./_features/orders-table";
+import { server } from "@/app/api/api";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:1000";
+export default function AdminOrdersPage() {
+  const [orders, setOrders] = useState();
 
-async function getOrders() {
-  const res = await fetch(`${API_URL}/order/all`, { cache: "no-store" });
-  const data = await res.json();
-  return data.orders ?? [];
-}
+  useEffect(() => {
+    server
+      .get("/order/all")
+      .then((response) => setOrders(response.data.orders ?? []))
+      .catch((err) => console.error(err));
+  }, []);
 
-export default async function AdminOrdersPage() {
-  const orders = await getOrders();
   return (
     <div className="mx-auto max-w-6xl">
       <section className="rounded-2xl bg-white p-6">
         <h2 className="text-xl font-semibold">Orders</h2>
-        <OrdersTable orders={orders}/>
+        {orders && <OrdersTable orders={orders} />}
       </section>
     </div>
   );

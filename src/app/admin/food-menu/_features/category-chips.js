@@ -13,13 +13,15 @@ export function CategoryChips({ chips, categories, totalCount }) {
   const { remove } = useCategory();
 
   const submit = async (id) => {
-     if (!confirm("Delete this category?")) return;
+    if (!confirm("Delete this category?")) return;
     setSubmitting(true);
     setError("");
     try {
       await remove(id);
     } catch (err) {
       if (err.response?.status === 404) {
+        setError(err.response.data.message);
+      } else if (err.response?.status === 403) {
         setError(err.response.data.message);
       } else {
         setError("Something went wrong. Try again.");

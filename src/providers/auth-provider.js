@@ -1,5 +1,6 @@
 "use client";
 
+import { server } from "@/app/api/api";
 import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
 
@@ -11,15 +12,36 @@ export function AuthProvider({ children }) {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    let cached = null;
     try {
       const savedUser = localStorage.getItem("user");
       if (savedUser) {
-        setUser(JSON.parse(savedUser));
+        cached = JSON.parse(savedUser);
+        setUser(cached);
       }
     } catch (err) {
       console.error(err);
     }
-    setReady(true);
+
+    if (!localStorage.getItem("token")) {
+      setUser(null);
+      setReady(true);
+      return;
+    }
+
+    server
+      .get("/auth/me")
+      .then((response) => {
+        const verified = { ...cached, ...response.data.user };
+        setUser(verified);
+        localStorage.setItem("user", JSON.stringify(verified));
+      })
+      .catch(() => {
+        setUser(null);
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+      })
+      .finally(() => setReady(true));
   }, []);
 
   const login = (userData, token) => {
@@ -55,5 +77,9 @@ export function AuthProvider({ children }) {
 }
 
 export function useAuth() {
-  return useContext(AuthContext);
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within and AuthProvider");
+  }
+  return context;
 }
